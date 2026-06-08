@@ -1,0 +1,32 @@
+import { Router } from "express";
+import {
+  deleteNote,
+  editNote,
+  getNotesBySubjects,
+  getNoteStatus,
+  getSingleNote,
+  moveNote,
+  uploadNoteImage,
+  searchNotes,
+  retryNoteAI
+} from '../controllers/note.controller.js'
+import { protect } from "../middlewares/auth.middleware.js";
+import upload from "../middlewares/upload.middleware.js";
+import validate from "../middlewares/validate.middleware.js";
+import { editNoteSchema, moveNoteSchema } from "../validators/note.validator.js";
+
+const router=Router()
+
+router.post("/upload",protect,upload.single("image"),uploadNoteImage)
+router.get("/subject/:subjectId",protect,getNotesBySubjects)
+router.get("/:noteId",protect,getSingleNote)
+router.patch("/:noteId",protect,validate(editNoteSchema),editNote)
+router.patch("/:noteId/move",protect,validate(moveNoteSchema),moveNote)
+router.delete("/:noteId",protect,deleteNote)
+router.get("/:noteId/status",protect,getNoteStatus)
+router.get("/search",protect,searchNotes)
+router.post("/:noteId/retry",protect,retryNoteAI)
+
+
+
+export default router
