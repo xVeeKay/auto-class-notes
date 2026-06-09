@@ -1,4 +1,5 @@
 import './config/env.js'
+import "./jobs/workers/note.worker.js"
 import app from './app.js'
 import connectDB from './database/db.js'
 

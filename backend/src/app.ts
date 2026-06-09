@@ -9,7 +9,10 @@ import subjectRoutes from "./api/routes/subject.routes.js"
 
 const app=express()
 
-app.use(cors())
+app.use(cors({
+  origin: process.env.FRONTEND_URL?.replace(/\/$/, ""),
+  credentials: true
+}));
 app.use(cookieParser())
 app.use(helmet())
 app.use(express.json())
@@ -32,4 +35,3 @@ app.get('/error', () => {
 
 app.use(errorMiddleware)
 export default app
-
