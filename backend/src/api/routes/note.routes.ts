@@ -17,7 +17,7 @@ import { editNoteSchema, moveNoteSchema } from "../validators/note.validator.js"
 
 const router=Router()
 
-router.post("/upload",protect,upload.single("image"),uploadNoteImage)
+router.post("/upload",protect,upload.single("file"),uploadNoteImage)
 router.get("/subject/:subjectId",protect,getNotesBySubjects)
 router.get("/:noteId",protect,getSingleNote)
 router.patch("/:noteId",protect,validate(editNoteSchema),editNote)

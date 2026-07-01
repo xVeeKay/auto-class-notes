@@ -4,7 +4,6 @@ type Options={
 }
 
 export const apiFetch=async(endpoint:string,options:Options={})=>{
-    console.log(import.meta.env.VITE_BACKEND_URL + endpoint)
     const res=await fetch(import.meta.env.VITE_BACKEND_URL + endpoint,{
         method:options.method || "GET",
         credentials:"include",
@@ -25,8 +24,8 @@ export const uploadFetch=async(endpoint:string,formData:FormData)=>{
         body:formData
     })
     const data=await res.json()
-    if(!data){
-        throw new Error(data.message)
+    if(!res.ok){
+        throw new Error(data.message || "Upload Failed")
     }
     return data
 }

@@ -18,3 +18,14 @@ export const getSubjects=asyncHandler(
         return
     }
 )
+
+export const createSubject=asyncHandler(async(req:AuthRequest,res:Response)=>{
+    const {title}=req.body
+    const subject=await Subject.create({
+        userId:req.user!._id,
+        title
+    })
+    res.status(200).json(
+        new apiResponse(true,"Subject created successfully",{subject})
+    )
+})

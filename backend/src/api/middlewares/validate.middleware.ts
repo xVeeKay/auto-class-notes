@@ -9,7 +9,6 @@ const validate = (schema: ZodTypeAny) => {
         query: req.query,
         params: req.params,
       })
-
       next()
     } catch (error: any) {
       return next(error)
