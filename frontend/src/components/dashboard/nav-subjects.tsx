@@ -7,6 +7,7 @@ import {
   Trash2,
   type LucideIcon,
 } from "lucide-react"
+import { NavLink } from "react-router-dom"
 
 import {
   DropdownMenu,
@@ -24,6 +25,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { useLocation, Link } from "react-router-dom"
 
 export function NavSubjects({
   subjects,
@@ -36,56 +38,64 @@ export function NavSubjects({
   }[]
 }) {
   const { isMobile } = useSidebar()
+  const location=useLocation()
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Your Subjects</SidebarGroupLabel>
       <SidebarMenu>
-        {subjects.length==0 && (
+        {subjects.length == 0 && (
           <SidebarMenuItem>
             <span className="text-sm text-muted-foreground px-2 py-1">
               No subjects found
             </span>
           </SidebarMenuItem>
         )}
-        {subjects.map((item) => (
-          <SidebarMenuItem key={item._id}>
-            <SidebarMenuButton asChild>
-              <a href={`/dashboard/${item._id}`}>
-                <span>{item.title}</span>
-              </a>
-            </SidebarMenuButton>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuAction showOnHover>
-                  <MoreHorizontal />
-                  <span className="sr-only">More</span>
-                </SidebarMenuAction>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className="w-48"
-                side={isMobile ? "bottom" : "right"}
-                align={isMobile ? "end" : "start"}
+        {subjects.map((item) => {
+          const isActive=location.pathname===`/dashboard/${item._id}`
+          return (
+            <SidebarMenuItem key={item._id}>
+              <SidebarMenuButton
+                asChild
+                isActive={isActive}
+                /* Replaced bg-primary with bg-accent (the standard hover background) */
+                className="data-[active=true]:bg-accent data-[active=true]:text-accent-foreground"
               >
-                <DropdownMenuItem>
-                  <Folder className="text-muted-foreground" />
-                  <span>View Project</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Share className="text-muted-foreground" />
-                  <span>Share Project</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Trash2 className="text-muted-foreground" />
-                  <span>Delete Project</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        ))}
-
+                <Link to={`/dashboard/${item._id}`}>
+                  <span>{item.title}</span>
+                </Link>
+              </SidebarMenuButton>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <SidebarMenuAction showOnHover>
+                    <MoreHorizontal />
+                    <span className="sr-only">More</span>
+                  </SidebarMenuAction>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  className="w-48"
+                  side={isMobile ? "bottom" : "right"}
+                  align={isMobile ? "end" : "start"}
+                >
+                  <DropdownMenuItem>
+                    <Folder className="text-muted-foreground" />
+                    <span>View Project</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Share className="text-muted-foreground" />
+                    <span>Share Project</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <Trash2 className="text-muted-foreground" />
+                    <span>Delete Project</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </SidebarMenuItem>
+          );
+      })}
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }

@@ -187,7 +187,7 @@ export const getNoteStatus = asyncHandler(
       userId: req.user?._id,
       _id: req.params.noteId,
     }).select(
-      "status title detectedSubject errorMessage processingStartedAt processingCompletedAt",
+      "status title detectedSubject errorMessage processingStartedAt processingCompletedAt subjectId",
     );
     if (!note) {
       throw new apiError(404, "Note note found");

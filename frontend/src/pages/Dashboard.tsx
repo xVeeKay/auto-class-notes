@@ -8,7 +8,9 @@ import {
   Loader2,
   Clock,
   XCircle,
+  ArrowRight,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { apiFetch, uploadFetch } from "@/api/fetchClient.ts";
@@ -25,6 +27,7 @@ interface QueueItem {
   status: QueueStatus;
   noteId?:string;
   errorMessage?:string;
+  subjectId?:string;
 }
 
 const initialQueue: QueueItem[] = [];
@@ -74,7 +77,7 @@ const pollNoteStatus=async(noteId:string,queueItemId:number)=>{
       const res = await apiFetch(`/notes/${noteId}/status`);
       const note=res.data
       if(note.status=="completed"){
-        setQueue((prev)=>prev.map((i)=>i.id==queueItemId?{...i,status:"completed"}:i))
+        setQueue((prev)=>prev.map((i)=>i.id==queueItemId?{...i,subjectId:note.subjectId,status:"completed",}:i))
         const completedTime = new Date(note.processingCompletedAt).getTime();
         const startedTime = new Date(note.processingStartedAt).getTime();
         const totalTimeInSeconds = (completedTime - startedTime) / 1000;
@@ -191,7 +194,8 @@ const pollNoteStatus=async(noteId:string,queueItemId:number)=>{
                     {item.filename}
                   </p>
                   <p className="text-xs text-muted-foreground capitalize">
-                    {item.status} {item.errorMessage?`: ${item.errorMessage}`:""}
+                    {item.status}{" "}
+                    {item.errorMessage ? `: ${item.errorMessage}` : ""}
                   </p>
                 </div>
                 <div className="ml-4 flex-shrink-0">
@@ -200,8 +204,7 @@ const pollNoteStatus=async(noteId:string,queueItemId:number)=>{
                       variant="secondary"
                       className="flex gap-1.5 py-1 px-2.5 bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/20 border-none"
                     >
-                      <SpinnerCustom/> Generating
-                      notes...
+                      <SpinnerCustom /> Generating notes...
                     </Badge>
                   )}
                   {item.status === "queued" && (
@@ -213,12 +216,23 @@ const pollNoteStatus=async(noteId:string,queueItemId:number)=>{
                     </Badge>
                   )}
                   {item.status === "completed" && (
-                    <Badge
-                      variant="default"
-                      className="flex gap-1.5 py-1 px-2.5 bg-green-500/10 text-green-700 dark:text-green-400 hover:bg-green-500/20 border-none"
-                    >
-                      <CheckCircle2 size={12} /> Completed
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      <Badge
+                        variant="default"
+                        className="flex gap-1.5 py-1 px-2.5 bg-green-500/10 text-green-700 dark:text-green-400 hover:bg-green-500/20 border-none"
+                      >
+                        <CheckCircle2 size={12} /> Completed
+                      </Badge>
+
+                      {item.subjectId && (
+                        <Link
+                          to={`/dashboard/${item.subjectId}`}
+                          className="flex items-center gap-1.5 text-xs font-medium text-foreground bg-secondary/50 hover:bg-secondary px-2.5 py-1 rounded-md transition-colors"
+                        >
+                          View Subject <ArrowRight size={12} />
+                        </Link>
+                      )}
+                    </div>
                   )}
                   {item.status === "failed" && (
                     <Badge
