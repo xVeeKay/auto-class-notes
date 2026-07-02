@@ -8,6 +8,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useParams } from "react-router-dom";
+import removeMarkdown from "remove-markdown"
 
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -72,7 +73,8 @@ export default function SubjectPage() {
   );
 
   const copyNote = async (content: string) => {
-    await navigator.clipboard.writeText(content);
+    const plaintText=removeMarkdown(content)
+    await navigator.clipboard.writeText(plaintText);
     toast.success("Notes copied");
   };
 

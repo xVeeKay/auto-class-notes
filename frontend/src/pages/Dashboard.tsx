@@ -273,7 +273,7 @@ const pollNoteStatus=async(noteId:string,queueItemId:number)=>{
             {/* Document Action */}
             <button
               onClick={() => documentInputRef.current?.click()}
-              className="h-10 w-10 items-center justify-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground transition-colors hidden sm:flex"
+              className="flex h-10 w-10 items-center justify-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
               aria-label="Upload PDF"
             >
               <FileText size={20} />
