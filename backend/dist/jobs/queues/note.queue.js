@@ -1,0 +1,5 @@
+import { Queue } from "bullmq";
+import connection from "../../config/redis.js";
+export const noteQueue = new Queue("note-processing", {
+    connection: connection
+});
