@@ -7,7 +7,7 @@ import { generateToken } from "../../utils/jwt.js";
 
 const cookieOptions = {
   httpOnly: true,
-  sameSite: 'lax' as const,
+  sameSite: 'none' as const,
   maxAge: 24 * 60 * 60 * 1000,
 }
 
