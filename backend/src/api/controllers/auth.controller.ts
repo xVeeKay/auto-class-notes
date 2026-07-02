@@ -7,9 +7,10 @@ import { generateToken } from "../../utils/jwt.js";
 
 const cookieOptions = {
   httpOnly: true,
-  sameSite: 'none' as const,
+  secure: true,
+  sameSite: "none" as const,
   maxAge: 24 * 60 * 60 * 1000,
-}
+};
 
 
 export const registerUser=asyncHandler(
