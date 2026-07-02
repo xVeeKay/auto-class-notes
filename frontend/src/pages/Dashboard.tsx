@@ -5,7 +5,6 @@ import {
   FileText,
   Send,
   CheckCircle2,
-  Loader2,
   Clock,
   XCircle,
   ArrowRight,
@@ -198,7 +197,7 @@ const pollNoteStatus=async(noteId:string,queueItemId:number)=>{
                     {item.errorMessage ? `: ${item.errorMessage}` : ""}
                   </p>
                 </div>
-                <div className="ml-4 flex-shrink-0">
+                <div className="ml-4 shrink-0">
                   {item.status === "processing" && (
                     <Badge
                       variant="secondary"
@@ -274,7 +273,7 @@ const pollNoteStatus=async(noteId:string,queueItemId:number)=>{
             {/* Document Action */}
             <button
               onClick={() => documentInputRef.current?.click()}
-              className="h-10 w-10 flex items-center justify-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground transition-colors hidden sm:flex"
+              className="h-10 w-10 items-center justify-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground transition-colors hidden sm:flex"
               aria-label="Upload PDF"
             >
               <FileText size={20} />
