@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import {
   Camera,
   Image as ImageIcon,
-  FileText,
   Send,
   CheckCircle2,
   Clock,
@@ -16,30 +15,27 @@ import { apiFetch, uploadFetch } from "@/api/fetchClient.ts";
 import { SpinnerCustom } from "@/components/ui/spinner.tsx";
 import { useSubjects } from "@/context/SubjectContext.tsx";
 
-// 1. Define types directly in the file
 type QueueStatus = "queued" | "processing" | "completed" | "failed";
 
 interface QueueItem {
   id: number;
   filename: string;
-  file:File;
+  file: File;
   status: QueueStatus;
-  noteId?:string;
-  errorMessage?:string;
-  subjectId?:string;
+  noteId?: string;
+  errorMessage?: string;
+  subjectId?: string;
 }
 
 const initialQueue: QueueItem[] = [];
 
 export default function Dashboard() {
   const [queue, setQueue] = useState<QueueItem[]>(initialQueue);
-  const [isProcessing,setIsProcessing]=useState(false)
-  const {fetchSubjects}=useSubjects()
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { fetchSubjects } = useSubjects();
 
-  // 3. Type the refs as HTMLInputElement
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
-  const documentInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -56,74 +52,85 @@ export default function Dashboard() {
     event.target.value = "";
   };
 
-  const uploadFile=async(file:File)=>{
-    const formData=new FormData()
-    formData.append("file",file)
-    const res=await uploadFetch("/notes/upload",formData)
-    return res
-  }
+  const uploadFile = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const res = await uploadFetch("/notes/upload", formData);
+    return res;
+  };
 
-  useEffect(()=>{
-    if(isProcessing) return
-    const nextItem=queue.find((i)=>i.status==="queued")
-    if(!nextItem) return
-    processQueueItem(nextItem.id)
-  },[queue,isProcessing])
+  useEffect(() => {
+    if (isProcessing) return;
+    const nextItem = queue.find((i) => i.status === "queued");
+    if (!nextItem) return;
+    processQueueItem(nextItem.id);
+  }, [queue, isProcessing]);
 
-const pollNoteStatus=async(noteId:string,queueItemId:number)=>{
-  const interval=setInterval(async()=>{
-    try {
-      const res = await apiFetch(`/notes/${noteId}/status`);
-      const note=res.data
-      if(note.status=="completed"){
-        setQueue((prev)=>prev.map((i)=>i.id==queueItemId?{...i,subjectId:note.subjectId,status:"completed",}:i))
-        const completedTime = new Date(note.processingCompletedAt).getTime();
-        const startedTime = new Date(note.processingStartedAt).getTime();
-        const totalTimeInSeconds = (completedTime - startedTime) / 1000;
-        toast.success(
-          `Notes generated for: ${note.detectedSubject} in ${totalTimeInSeconds.toFixed(1)}s`,
-        );
-        await fetchSubjects()
+  const pollNoteStatus = async (noteId: string, queueItemId: number) => {
+    const interval = setInterval(async () => {
+      try {
+        const res = await apiFetch(`/notes/${noteId}/status`);
+        const note = res.data;
+        if (note.status == "completed") {
+          setQueue((prev) =>
+            prev.map((i) =>
+              i.id == queueItemId
+                ? { ...i, subjectId: note.subjectId, status: "completed" }
+                : i,
+            ),
+          );
+          const completedTime = new Date(note.processingCompletedAt).getTime();
+          const startedTime = new Date(note.processingStartedAt).getTime();
+          const totalTimeInSeconds = (completedTime - startedTime) / 1000;
+          toast.success(
+            `Notes generated for: ${note.detectedSubject} in ${totalTimeInSeconds.toFixed(
+              1,
+            )}s`,
+          );
+          await fetchSubjects();
+          clearInterval(interval);
+        }
+        if (note.status == "failed") {
+          setQueue((prev) =>
+            prev.map((i) =>
+              i.id == queueItemId
+                ? { ...i, status: "failed", errorMessage: note.errorMessage }
+                : i,
+            ),
+          );
+          clearInterval(interval);
+          toast.error(note.errorMessage || "Failed to generate notes");
+        }
+      } catch (error) {
         clearInterval(interval);
       }
-      if(note.status=="failed"){
-        setQueue((prev) =>
-          prev.map((i) =>
-            i.id == queueItemId ? { ...i, status: "failed",errorMessage:note.errorMessage } : i,
-          ),
-        );
-        clearInterval(interval);
-        toast.error(note.errorMessage || "Failed to generate notes");
-      }
+    }, 2000);
+  };
 
-    } catch (error) {
-      clearInterval(interval)
-    }
-  },2000)
-}
-
-  const processQueueItem = async(itemId: number) => {
+  const processQueueItem = async (itemId: number) => {
     try {
-      setIsProcessing(true)
-      setQueue((prev)=>prev.map((i)=>i.id==itemId?{...i,status:"processing"}:i))
-      const item=queue.find((i)=>i.id==itemId)
+      setIsProcessing(true);
+      setQueue((prev) =>
+        prev.map((i) => (i.id == itemId ? { ...i, status: "processing" } : i)),
+      );
+      const item = queue.find((i) => i.id == itemId);
       if (!item) {
         throw new Error("Queue item not found");
       }
-      const res=await uploadFile(item.file)
-      const noteId=res.data?.note._id
+      const res = await uploadFile(item.file);
+      const noteId = res.data?.note._id;
       setQueue((prev) =>
         prev.map((i) => (i.id == itemId ? { ...i, noteId } : i)),
       );
-      pollNoteStatus(noteId,itemId)
-      toast.success("AI generation started...")
-    } catch (error:any) {
+      pollNoteStatus(noteId, itemId);
+      toast.success("AI generation started...");
+    } catch (error: any) {
       setQueue((prev) =>
         prev.map((i) => (i.id == itemId ? { ...i, status: "failed" } : i)),
       );
-      toast.error( error.message|| "Failed to create note")
-    }finally{
-      setIsProcessing(false)
+      toast.error(error.message || "Failed to create note");
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -143,14 +150,6 @@ const pollNoteStatus=async(noteId:string,queueItemId:number)=>{
         accept="image/*"
         multiple // Allow multiple image selection
         ref={galleryInputRef}
-        className="hidden"
-        onChange={handleFileSelect}
-      />
-      <input
-        type="file"
-        accept=".pdf,.doc,.docx,application/pdf"
-        multiple
-        ref={documentInputRef}
         className="hidden"
         onChange={handleFileSelect}
       />
@@ -182,11 +181,7 @@ const pollNoteStatus=async(noteId:string,queueItemId:number)=>{
                 className="flex items-center p-4 bg-card border border-border rounded-xl shadow-sm"
               >
                 <div className="h-10 w-10 bg-muted rounded-md flex items-center justify-center mr-4 text-muted-foreground">
-                  {item.filename.endsWith(".pdf") ? (
-                    <FileText size={20} />
-                  ) : (
-                    <ImageIcon size={20} />
-                  )}
+                  <ImageIcon size={20} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">
@@ -270,24 +265,15 @@ const pollNoteStatus=async(noteId:string,queueItemId:number)=>{
               <ImageIcon size={20} />
             </button>
 
-            {/* Document Action */}
-            <button
-              onClick={() => documentInputRef.current?.click()}
-              className="flex h-10 w-10 items-center justify-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
-              aria-label="Upload PDF"
-            >
-              <FileText size={20} />
-            </button>
-
             {/* Clickable Text Area (Defaults to gallery upload for speed) */}
             <div
               onClick={() => galleryInputRef.current?.click()}
               className="flex-1 px-2 text-sm text-muted-foreground truncate cursor-pointer hover:text-foreground transition-colors"
             >
-              Capture or select files...
+              Capture or select images...
             </div>
 
-            {/* Upload Button (Also wired to Gallery for this fast-upload workflow) */}
+            {/* Upload Button */}
             <button
               onClick={() => galleryInputRef.current?.click()}
               className="h-10 px-4 rounded-full bg-primary text-primary-foreground font-medium flex items-center gap-2 hover:opacity-90 transition-opacity shadow-sm mr-1"

@@ -4,13 +4,13 @@ import apiError from "../../utils/apiError.js"
 const allowedMimeTypes = [
   "image/png",
   "image/jpeg",
-  "image/webp",
+//   "image/webp",
 
-  "application/pdf",
+//   "application/pdf",
 
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+//   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 
-  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+//   "application/vnd.openxmlformats-officedocument.presentationml.presentation",
 ];
 
 const storage=multer.memoryStorage()
@@ -22,7 +22,7 @@ const fileFilter:multer.Options["fileFilter"]=(_req,file,cb)=>{
         cb(
           new apiError(
             400,
-            "Only PNG, JPG, WEBP, PDF, DOCX and PPTX files are allowed.",
+            "Only PNG, JPG files are allowed.",
           ),
         );
     }

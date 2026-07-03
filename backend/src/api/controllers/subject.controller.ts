@@ -29,3 +29,14 @@ export const createSubject=asyncHandler(async(req:AuthRequest,res:Response)=>{
         new apiResponse(true,"Subject created successfully",{subject})
     )
 })
+
+export const deleteSubject=asyncHandler(async(req:AuthRequest,res:Response)=>{
+    const {subjectId}=req.params
+    const subject=await Subject.findOne({_id:subjectId,userId:req.user!._id})
+    if(!subject){
+        throw new apiError(404,"Subject not found")
+    }
+    await Note.deleteMany({subjectId:subject._id})
+    await subject.deleteOne()
+    res.json(new apiResponse(true,"Subject deleted successfully"))
+})

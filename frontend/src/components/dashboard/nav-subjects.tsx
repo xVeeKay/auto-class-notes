@@ -26,6 +26,10 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { useLocation, Link } from "react-router-dom"
+import { apiFetch } from "@/api/fetchClient.ts"
+import { toast } from "sonner"
+import { useSubjects } from "@/context/SubjectContext.tsx"
+import { useNavigate } from "react-router-dom"
 
 export function NavSubjects({
   subjects,
@@ -39,7 +43,41 @@ export function NavSubjects({
 }) {
   const { isMobile } = useSidebar()
   const location=useLocation()
+  const {fetchSubjects}=useSubjects()
+  const navigate=useNavigate()
+  const handleDelete = (id: string, title: string) => {
+    toast(`Delete "${title}"?`, {
+      description: "This action cannot be undone.",
+      action: {
+        label: "Delete",
+        onClick: async () => {
+          try {
+            await apiFetch(`/subjects/${id}`, {
+              method: "DELETE",
+            });
 
+            toast.success("Subject deleted");
+
+            // Refresh subjects
+            fetchSubjects();
+
+            // If user is currently viewing this subject
+            if (location.pathname === `/dashboard/${id}`) {
+              navigate("/dashboard");
+            }
+          } catch (err: any) {
+            toast.error(
+              err.response?.data?.message || "Failed to delete subject",
+            );
+          }
+        },
+      },
+      cancel: {
+        label: "Cancel",
+        onClick: () => {},
+      },
+    });
+  };
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Your Subjects</SidebarGroupLabel>
@@ -77,18 +115,23 @@ export function NavSubjects({
                   side={isMobile ? "bottom" : "right"}
                   align={isMobile ? "end" : "start"}
                 >
-                  <DropdownMenuItem>
-                    <Folder className="text-muted-foreground" />
-                    <span>View Project</span>
+                  <DropdownMenuItem asChild>
+                    <Link to={`/dashboard/${item._id}`}>
+                      <Folder className="text-muted-foreground" />
+                      <span>View Subject</span>
+                    </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  {/* <DropdownMenuItem>
                     <Share className="text-muted-foreground" />
                     <span>Share Project</span>
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> */}
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <Trash2 className="text-muted-foreground" />
-                    <span>Delete Project</span>
+                  <DropdownMenuItem
+                    className="text-red-500"
+                    onClick={() => handleDelete(item._id,item.title)}
+                  >
+                    <Trash2 />
+                    <span>Delete Subject</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
