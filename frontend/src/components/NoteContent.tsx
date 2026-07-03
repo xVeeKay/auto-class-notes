@@ -1,5 +1,6 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from  "rehype-raw"
 
 export default function NoteContent({ content }: { content: string }) {
   return (
@@ -26,7 +27,7 @@ export default function NoteContent({ content }: { content: string }) {
           prose-strong:text-foreground
         "
       >
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+        <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>{content}</ReactMarkdown>
       </div>
     </div>
   );
