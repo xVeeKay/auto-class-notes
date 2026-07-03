@@ -24,6 +24,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
 import { useContext } from "react"
 import { AuthContext } from "@/context/AuthContext.tsx"
@@ -86,6 +87,7 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+    const {isMobile,setOpenMobile}=useSidebar()
     const {subjects,fetchSubjects,loading}=useSubjects()
     const navigate=useNavigate()
     const {user}=useContext(AuthContext)
@@ -118,6 +120,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
       const res = await promise;
       await fetchSubjects()
+      if(isMobile){
+        setOpenMobile(false)
+      }
       navigate(`/dashboard/${res.data._id}`);
     };
   return (
@@ -140,7 +145,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <Link className="flex w-full items-center gap-3 rounded-md px-4 py-2 text-sm font-medium text-foreground/90 transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" to="/dashboard">
+        <Link className="flex w-full items-center gap-3 rounded-md px-4 py-2 text-sm font-medium text-foreground/90 transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" to="/dashboard" onClick={()=>{if(isMobile) setOpenMobile(false)}}>
           <NotebookPen className="size-4 shrink-0" />
           <span className="truncate">Create Note</span>
         </Link>

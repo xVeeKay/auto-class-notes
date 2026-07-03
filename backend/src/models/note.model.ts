@@ -14,6 +14,7 @@ export interface INote extends Document {
   errorMessage?: string;
   processingStartedAt?: Date;
   processingCompletedAt?: Date;
+  isDone?:boolean
 }
 
 const noteSchema = new Schema<INote>(
@@ -68,6 +69,10 @@ const noteSchema = new Schema<INote>(
     },
     processingCompletedAt:{
         type:Date
+    },
+    isDone:{
+      type:Boolean,
+      default:false
     }
   },
   { timestamps: true },

@@ -248,3 +248,12 @@ export const retryNoteAI = asyncHandler(
       .json(new apiResponse(true, "Retry started", { noteId: note._id }));
   },
 );
+
+export const markDone=asyncHandler(async(req:AuthRequest,res:Response)=>{
+  const note=await Note.findById(req.params.noteId)
+  note!.isDone=req.body.isDone
+  await note?.save()
+  res.status(200).json(
+    new apiResponse(true,"Status changed successfully")
+  )
+})

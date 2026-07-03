@@ -8,8 +8,9 @@ import {
   moveNote,
   uploadNoteImage,
   searchNotes,
-  retryNoteAI
-} from '../controllers/note.controller.js'
+  retryNoteAI,
+  markDone,
+} from "../controllers/note.controller.js";
 import { protect } from "../middlewares/auth.middleware.js";
 import upload from "../middlewares/upload.middleware.js";
 import validate from "../middlewares/validate.middleware.js";
@@ -26,6 +27,7 @@ router.delete("/:noteId",protect,deleteNote)
 router.get("/:noteId/status",protect,getNoteStatus)
 router.get("/search",protect,searchNotes)
 router.post("/:noteId/retry",protect,retryNoteAI)
+router.patch("/:noteId/done",protect,markDone)
 
 
 
