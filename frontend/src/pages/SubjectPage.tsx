@@ -38,13 +38,8 @@ interface Note {
   processingStartedAt?: string;
   processingCompletedAt?: string;
   createdAt: string;
-  isDone?: boolean; // Added for the Mark as Done state
+  isDone?: boolean;
 }
-
-const mockSubject = {
-  title: "Cloud Computing Architectures",
-  generatedNotes: 12,
-};
 
 export default function SubjectPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -60,7 +55,6 @@ export default function SubjectPage() {
   const fetchNotes = async () => {
     try {
       const res = await apiFetch(`/notes/subject/${subjectId}`);
-      // Initialize isDone locally
       const mappedNotes = res.data.map((n: Note) => ({
         ...n,
         isDone: n.isDone || false,
@@ -85,23 +79,19 @@ export default function SubjectPage() {
     toast.success("Notes copied");
   };
 
-  // ================= NEW FUNCTIONALITY =================
   const toggleDone = (noteId: string) => {
     setNotes((prev) =>
       prev.map((n) => (n._id === noteId ? { ...n, isDone: !n.isDone } : n)),
     );
     toast.success("Note status updated");
-    // TODO: Await actual API patch call here
   };
 
   const deleteNote = (noteId: string) => {
     if (!window.confirm("Are you sure you want to delete this note?")) return;
     setNotes((prev) => prev.filter((n) => n._id !== noteId));
     toast.success("Note deleted");
-    // TODO: Await actual API delete call here
   };
 
-  // ================= LOADING SKELETON =================
   if (loading) {
     return (
       <div className="h-full overflow-y-auto bg-background">
@@ -141,7 +131,6 @@ export default function SubjectPage() {
     );
   }
 
-  // ================= MAIN CONTENT =================
   return (
     <div className="h-full overflow-y-auto bg-background">
       <div className="max-w-6xl mx-auto px-4 md:px-8 py-6">
@@ -188,9 +177,9 @@ export default function SubjectPage() {
           <div>
             {filteredNotes.map((note, index) => (
               <article key={note._id} className="py-8 border-b last:border-b-0">
-                <div className="flex flex-col gap-5 mb-6">
-                  {/* Title + Actions */}
-                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-5 mb-6">
+                  {/* Title & Date (Grouped together for mobile logic) */}
+                  <div className="flex-1 min-w-0 pr-4">
                     <div className="flex items-start gap-3">
                       <span
                         className={`text-xl md:text-2xl font-bold shrink-0 ${note.isDone ? "text-muted-foreground/50" : "text-primary"}`}
@@ -204,63 +193,62 @@ export default function SubjectPage() {
                       </h2>
                     </div>
 
-                    {/* ==============================================
-                      SHADCN SEGMENTED BUTTON GROUP
-                      ==============================================
-                    */}
-                    <div className="inline-flex -space-x-px rounded-md shadow-sm shrink-0">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="rounded-r-none h-9 focus:z-10 px-3 md:px-4"
-                        onClick={() => copyNote(note.aiContent ?? "")}
-                      >
-                        <Copy size={14} className="md:mr-2 shrink-0" />
-                        <span className="hidden md:inline">Copy</span>
-                      </Button>
-
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="rounded-none h-9 focus:z-10 px-3 md:px-4"
-                        onClick={() => setSelectedImage(note.imageUrl)}
-                      >
-                        <ImageIcon size={14} className="md:mr-2 shrink-0" />
-                        <span className="hidden md:inline">Image</span>
-                      </Button>
-
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className={`rounded-none h-9 focus:z-10 px-3 md:px-4 transition-colors ${
-                          note.isDone
-                            ? "bg-primary/10 text-primary border-primary/30"
-                            : ""
-                        }`}
-                        onClick={() => toggleDone(note._id)}
-                      >
-                        <CheckCircle2 size={14} className="md:mr-2 shrink-0" />
-                        <span className="hidden md:inline">
-                          {note.isDone ? "Done" : "Mark Done"}
-                        </span>
-                      </Button>
-
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="rounded-l-none h-9 text-destructive hover:bg-destructive/10 focus:z-10 px-3 md:px-4"
-                        onClick={() => deleteNote(note._id)}
-                      >
-                        <Trash2 size={14} className="md:mr-2 shrink-0" />
-                        <span className="hidden md:inline">Delete</span>
-                      </Button>
+                    {/* Date properly aligned under title on mobile */}
+                    <div className="flex items-center gap-2 mt-2 ml-7 text-xs font-medium text-muted-foreground">
+                      <Calendar size={14} />
+                      {new Date(note.createdAt).toLocaleDateString()}
                     </div>
                   </div>
 
-                  {/* Date */}
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Calendar size={14} />
-                    {new Date(note.createdAt).toLocaleDateString()}
+                  {/* SHADCN SEGMENTED BUTTON GROUP
+                    ✅ ADDED: 'self-start' and 'w-fit' to prevent stretching on mobile
+                  */}
+                  <div className="inline-flex -space-x-px rounded-md shadow-sm shrink-0 ml-7 lg:ml-0 self-start w-fit mt-2 lg:mt-0">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="rounded-r-none h-9 focus:z-10 px-3 md:px-4"
+                      onClick={() => copyNote(note.aiContent ?? "")}
+                    >
+                      <Copy size={14} className="md:mr-2 shrink-0" />
+                      <span className="hidden md:inline">Copy</span>
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="rounded-none h-9 focus:z-10 px-3 md:px-4"
+                      onClick={() => setSelectedImage(note.imageUrl)}
+                    >
+                      <ImageIcon size={14} className="md:mr-2 shrink-0" />
+                      <span className="hidden md:inline">Image</span>
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className={`rounded-none h-9 focus:z-10 px-3 md:px-4 transition-colors ${
+                        note.isDone
+                          ? "bg-primary/10 text-primary border-primary/30"
+                          : ""
+                      }`}
+                      onClick={() => toggleDone(note._id)}
+                    >
+                      <CheckCircle2 size={14} className="md:mr-2 shrink-0" />
+                      <span className="hidden md:inline">
+                        {note.isDone ? "Done" : "Mark Done"}
+                      </span>
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="rounded-l-none h-9 text-destructive hover:bg-destructive/10 focus:z-10 px-3 md:px-4"
+                      onClick={() => deleteNote(note._id)}
+                    >
+                      <Trash2 size={14} className="md:mr-2 shrink-0" />
+                      <span className="hidden md:inline">Delete</span>
+                    </Button>
                   </div>
                 </div>
 
