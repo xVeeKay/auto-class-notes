@@ -15,7 +15,7 @@ export const protect=asyncHandler(
         if(!token){
             throw new apiError(401,"Unauthorized")
         }
-        const decoded=jwt.verify(token,process.env.JWT_SECRET!) as {userId:string} 
+        const decoded=jwt.verify(token,process.env.JWT_SECRET!) as {userId:string}
         const user=await User.findById(decoded.userId).select("-password")
         if(!user){
             throw new apiError(401,"User not found")

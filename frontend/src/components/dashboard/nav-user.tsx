@@ -8,7 +8,9 @@ import {
   LogOut,
   Sparkles,
   User,
-} from "lucide-react"
+  LifeBuoy,
+  Send
+} from "lucide-react";
 
 import {
   Avatar,
@@ -100,10 +102,7 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage
-                    src={avatarUrl}
-                    alt={user?.name}
-                  />
+                  <AvatarImage src={avatarUrl} alt={user?.name} />
                   <AvatarFallback className="rounded-lg">
                     {user?.name?.[0]}
                   </AvatarFallback>
@@ -116,19 +115,39 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={()=>{
-                if(isMobile) setOpenMobile(false)
-                navigate("/profile")
-              }}>
+              <DropdownMenuItem
+                onClick={() => {
+                  if (isMobile) setOpenMobile(false);
+                  navigate("/profile");
+                }}
+              >
                 <User />
                 Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  if (isMobile) setOpenMobile(false);
+                  navigate("/support");
+                }}
+              >
+                <LifeBuoy />
+                Support
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  if (isMobile) setOpenMobile(false);
+                  navigate("/feedback");
+                }}
+              >
+                <Send />
+                Feedback
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout} disabled={loading}>
               <LogOut />
-              {loading && <SpinnerCustom/>}
-              {loading?"Logging out":"Log out"}
+              {loading && <SpinnerCustom />}
+              {loading ? "Logging out" : "Log out"}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

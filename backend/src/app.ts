@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser"
 import authRoutes from "./api/routes/auth.routes.js"
 import noteRoutes from "./api/routes/note.routes.js"
 import subjectRoutes from "./api/routes/subject.routes.js"
+import feedbackRoutes from "./api/routes/feedback.routes.js"
 
 const app=express()
 
@@ -19,6 +20,7 @@ app.use(express.urlencoded({extended:true}))
 app.use("/api/v1/auth",authRoutes)
 app.use("/api/v1/notes",noteRoutes)
 app.use("/api/v1/subjects",subjectRoutes)
+app.use("/api/v1/feedback",feedbackRoutes)
 
 
 

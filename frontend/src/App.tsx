@@ -8,6 +8,8 @@ import Layout from './components/Layout.tsx'
 import { SubjectProvider } from './context/SubjectContext.tsx'
 import SubjectPage from './pages/SubjectPage.tsx'
 import ProfilePage from './pages/ProfilePage.tsx'
+import FeedbackPage from './pages/FeedbackPage.tsx'
+import SupportPage from './pages/SupportPage.tsx'
 
 // import reactLogo from './assets/react.svg'
 // import viteLogo from './assets/vite.svg'
@@ -49,6 +51,22 @@ function App() {
         element={
           <ProtectedRoutes>
             <ProfilePage />
+          </ProtectedRoutes>
+        }
+      />
+      <Route
+        path="/feedback"
+        element={
+          <ProtectedRoutes>
+            <FeedbackPage />
+          </ProtectedRoutes>
+        }
+      />
+      <Route
+        path="/support"
+        element={
+          <ProtectedRoutes>
+            <SupportPage />
           </ProtectedRoutes>
         }
       />
