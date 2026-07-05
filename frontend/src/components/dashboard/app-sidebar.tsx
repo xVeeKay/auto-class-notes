@@ -46,6 +46,7 @@ import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom"
 import { useSubjects } from "@/context/SubjectContext.tsx"
 import { SpinnerCustom } from "../ui/spinner.tsx"
+import { ThemeToggle } from "../theme-toggle.tsx"
 
 
 const data = {
@@ -130,22 +131,35 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <a href="#">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <Command className="size-4" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">Acme Inc</span>
-                  <span className="truncate text-xs">Enterprise</span>
-                </div>
-              </a>
-            </SidebarMenuButton>
+            <div className="flex items-center justify-between px-2">
+              <SidebarMenuButton size="lg" asChild className="flex-1">
+                <Link to="/dashboard">
+                  <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                    <Command className="size-4" />
+                  </div>
+
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-semibold">Auto Notes</span>
+                    <span className="truncate text-xs text-muted-foreground">
+                      AI Revision Assistant
+                    </span>
+                  </div>
+                </Link>
+              </SidebarMenuButton>
+
+              <ThemeToggle />
+            </div>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <Link className="flex w-full items-center gap-3 rounded-md px-4 py-2 text-sm font-medium text-foreground/90 transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" to="/dashboard" onClick={()=>{if(isMobile) setOpenMobile(false)}}>
+        <Link
+          className="flex w-full items-center gap-3 rounded-md px-4 py-2 text-sm font-medium text-foreground/90 transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          to="/dashboard"
+          onClick={() => {
+            if (isMobile) setOpenMobile(false);
+          }}
+        >
           <NotebookPen className="size-4 shrink-0" />
           <span className="truncate">Create Note</span>
         </Link>

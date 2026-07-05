@@ -7,6 +7,7 @@ import {
   CreditCard,
   LogOut,
   Sparkles,
+  User,
 } from "lucide-react"
 
 import {
@@ -29,6 +30,12 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { useNavigate } from "react-router-dom"
+import { useContext, useState } from "react"
+import { apiFetch } from "@/api/fetchClient.ts"
+import { toast } from "sonner"
+import { AuthContext } from "@/context/AuthContext.tsx"
+import { SpinnerCustom } from "../ui/spinner.tsx"
 
 export function NavUser({
   user,
@@ -39,9 +46,28 @@ export function NavUser({
     email:string,
   }
 }) {
-  const { isMobile } = useSidebar()
+  const { isMobile,setOpenMobile } = useSidebar()
+  const {setUser}=useContext(AuthContext)
+  const navigate=useNavigate()
+  const [loading,setLoading]=useState(false)
   if(!user) return null
   const avatarUrl = `https://api.dicebear.com/9.x/notionists/svg?seed=${user._id}`;
+
+  const handleLogout=async()=>{
+    setLoading(true)
+    try {
+      await apiFetch("/auth/logout",{
+        method:"POST"
+      })
+      setUser(null)
+      toast.success("User logged out successfully");
+      navigate("/login")
+    } catch (error:any) {
+      toast.error(error.message || "Error while logging out")
+    }finally{
+      setLoading(false)
+    }
+  }
 
   return (
     <SidebarMenu>
@@ -90,30 +116,19 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
+              <DropdownMenuItem onClick={()=>{
+                if(isMobile) setOpenMobile(false)
+                navigate("/profile")
+              }}>
+                <User />
+                Profile
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout} disabled={loading}>
               <LogOut />
-              Log out
+              {loading && <SpinnerCustom/>}
+              {loading?"Logging out":"Log out"}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

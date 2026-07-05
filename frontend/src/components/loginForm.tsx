@@ -148,7 +148,7 @@ export function LoginForm({
                 <Input id="password" type="password" required onChange={(e)=>setPassword(e.target.value)}/>
               </Field>
               <Field>
-                <Button type="submit" disabled={loading}>{loading && <SpinnerCustom/>}{loading?"Loging...":"Login"}</Button>
+                <Button type="submit" disabled={loading}>{loading && <SpinnerCustom/>}{loading?"Logging in...":"Login"}</Button>
                 <FieldDescription className="text-center">
                   Don&apos;t have an account? <Link to="/register">Sign up</Link>
                 </FieldDescription>

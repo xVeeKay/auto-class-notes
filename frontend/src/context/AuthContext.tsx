@@ -15,7 +15,7 @@ const AuthProvider = ({children}:any) => {
     const fetchMe=async()=>{
         try {
             const res=await apiFetch("/auth/me")
-            setUser(res.data)
+            setUser(res.data.user)
         } catch (error) {
             setUser(null)
         } finally{

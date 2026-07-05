@@ -7,6 +7,7 @@ import Register from './pages/auth/Register'
 import Layout from './components/Layout.tsx'
 import { SubjectProvider } from './context/SubjectContext.tsx'
 import SubjectPage from './pages/SubjectPage.tsx'
+import ProfilePage from './pages/ProfilePage.tsx'
 
 // import reactLogo from './assets/react.svg'
 // import viteLogo from './assets/vite.svg'
@@ -43,6 +44,14 @@ function App() {
           }
         />
       </Route>
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoutes>
+            <ProfilePage />
+          </ProtectedRoutes>
+        }
+      />
 
       <Route path="*" element={<Login />} />
     </Routes>

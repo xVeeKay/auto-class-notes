@@ -6,6 +6,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { ThemeToggle } from "./theme-toggle.tsx";
 
 export default function Layout() {
   return (
@@ -20,12 +21,13 @@ export default function Layout() {
         */}
         <SidebarInset className="flex flex-col flex-1 overflow-hidden !min-h-0 md:h-[calc(100svh-16px)] h-[100svh]">
           <header className="flex h-14 shrink-0 items-center gap-2 border-b bg-background px-4">
-            <SidebarTrigger className="-ml-1" />
+            {" "}
+            <SidebarTrigger className="-ml-1" />{" "}
             <Separator
               orientation="vertical"
               className="mr-2 mt-[1.25rem] h-4"
-            />
-            <span className="text-sm font-semibold">Dashboard</span>
+            />{" "}
+            <span className="text-sm font-semibold">AUTO NOTES</span>{" "}
           </header>
 
           {/* 3. STRICT MAIN CONTAINER: This passes the remaining height exactly to your Dashboard component */}

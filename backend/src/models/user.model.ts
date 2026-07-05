@@ -37,7 +37,6 @@ userSchema.pre("save",async function(){
 userSchema.set('toJSON', {
   transform: (_doc, ret:any) => {
     delete ret.password
-
     return ret
   },
 })
