@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 export interface IUser extends Document {
   name: string;
   email: string;
-  password: string;
+  password?: string;
   resetPasswordToken?:string;
   resetPasswordExpires?:Date;
   googleId?:string;
@@ -26,7 +26,6 @@ const userSchema=new Schema<IUser>({
     },
     password:{
         type:String,
-        required:true,
     },
     resetPasswordToken:{
         type:String
@@ -39,12 +38,13 @@ const userSchema=new Schema<IUser>({
     }
 },{timestamps:true})
 
-userSchema.pre("save",async function(){
-    if(!this.isModified("password")){
-        return
-    }
-    this.password= await bcrypt.hash(this.password,10)
-})
+userSchema.pre("save", async function () {
+  if (!this.isModified("password") || !this.password) {
+    return;
+  }
+
+  this.password = await bcrypt.hash(this.password, 10);
+});
 
 userSchema.set('toJSON', {
   transform: (_doc, ret:any) => {
