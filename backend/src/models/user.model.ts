@@ -1,11 +1,13 @@
 import mongoose,{Schema,Document,Model} from "mongoose";
 import bcrypt from "bcryptjs";
 
-export interface IUser extends Document{
-    name:string,
-    email:string,
-    password:string,
-    comparePassword(enteredPassword:string):Promise<boolean>
+export interface IUser extends Document {
+  name: string;
+  email: string;
+  password: string;
+  resetPasswordToken?:string;
+  resetPasswordExpires?:Date;
+  comparePassword(enteredPassword: string): Promise<boolean>;
 }
 
 const userSchema=new Schema<IUser>({
@@ -24,6 +26,12 @@ const userSchema=new Schema<IUser>({
     password:{
         type:String,
         required:true,
+    },
+    resetPasswordToken:{
+        type:String
+    },
+    resetPasswordExpires:{
+        type:Date
     }
 },{timestamps:true})
 

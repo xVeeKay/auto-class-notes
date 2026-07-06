@@ -7,6 +7,8 @@ import { generateToken } from "../../utils/jwt.js";
 import { AuthRequest } from "../middlewares/auth.middleware.js";
 import Note from "../../models/note.model.js";
 import Subject from "../../models/subject.model.js";
+import crypto from "crypto";
+import { sendEmail } from "../../utils/email.js";
 
 const cookieOptions = {
   httpOnly: true,
@@ -14,6 +16,60 @@ const cookieOptions = {
   sameSite: "none" as const,
   maxAge: 24 * 60 * 60 * 1000,
 };
+
+export const resetPasswordTemplate = (name: string, resetUrl: string) => `
+<div style="
+max-width:600px;
+margin:auto;
+padding:32px;
+font-family:Arial,sans-serif;
+line-height:1.6;
+">
+
+<h2>Reset your Revly password</h2>
+
+<p>Hi ${name},</p>
+
+<p>
+We received a request to reset your password.
+</p>
+
+<p>
+Click the button below to choose a new password.
+</p>
+
+<p style="margin:32px 0;">
+<a
+href="${resetUrl}"
+style="
+background:#111827;
+color:#fff;
+padding:14px 24px;
+text-decoration:none;
+border-radius:8px;
+display:inline-block;
+font-weight:600;
+">
+Reset Password
+</a>
+</p>
+
+<p>
+This link will expire in <strong>15 minutes</strong>.
+</p>
+
+<p>
+If you didn't request a password reset, you can safely ignore this email.
+</p>
+
+<hr>
+
+<p style="font-size:14px;color:#666;">
+Built with ❤️ by Revly
+</p>
+
+</div>
+`;
 
 export const registerUser = asyncHandler(
   async (req: Request, res: Response) => {
@@ -156,5 +212,63 @@ export const deleteAccount = asyncHandler(
     res.clearCookie("token");
 
     res.status(200).json(new apiResponse(true, "Account deleted successfully"));
+  },
+);
+
+export const forgotPassword = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new apiError(404, "User not found");
+    }
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+    user.resetPasswordToken = hashedToken;
+    user.resetPasswordExpires = new Date(Date.now() + 10 * 60 * 1000);
+    await user.save({
+      validateBeforeSave: false,
+    });
+    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    try {
+      await sendEmail({
+        to: user.email,
+        subject: "Reset your Revly password",
+        html: resetPasswordTemplate(user.name, resetUrl),
+      });
+    } catch (error) {
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpires = undefined;
+
+      await user.save({ validateBeforeSave: false });
+
+      throw new apiError(500, "Unable to send reset email. Please try again.");
+    }
+    res.status(200).json(new apiResponse(true, "Password reset email sent"));
+  },
+);
+
+export const resetPassword = asyncHandler(
+  async (req: Request, res: Response) => {
+    const {token}=req.params
+    const {password}=req.body
+    if(!password){
+      throw new apiError(400,"Password is required")
+    }
+    const hashedToken=crypto.createHash("sha256").update(token as string).digest("hex")
+    const user=await User.findOne({resetPasswordToken:hashedToken,resetPasswordExpires:{$gt:new Date()}})
+    if(!user){
+      throw new apiError(400,"Reset link is invalid or expired")
+    }
+    user.password=password
+    user.resetPasswordToken=undefined
+    user.resetPasswordExpires=undefined
+    await user.save()
+    res.status(200).json(
+      new apiResponse(true,"Password has been reset successfully")
+    )
   },
 );

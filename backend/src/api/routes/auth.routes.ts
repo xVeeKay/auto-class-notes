@@ -7,6 +7,8 @@ import {
   editUser,
   changePassword,
   deleteAccount,
+  forgotPassword,
+  resetPassword,
 } from "../controllers/auth.controller.js";
 import { protect } from "../middlewares/auth.middleware.js";
 import validate from "../middlewares/validate.middleware.js";
@@ -23,5 +25,7 @@ router.patch("/profile",protect,editUser)
 router.patch("/password",protect,changePassword)
 router.delete("/account",protect,deleteAccount)
 router.post("/logout", protect, logoutUser);
+router.post("/forgot-password",forgotPassword)
+router.post("/reset-password/:token", resetPassword);
 
 export default router

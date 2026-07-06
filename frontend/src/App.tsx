@@ -10,6 +10,8 @@ import SubjectPage from './pages/SubjectPage.tsx'
 import ProfilePage from './pages/ProfilePage.tsx'
 import FeedbackPage from './pages/FeedbackPage.tsx'
 import SupportPage from './pages/SupportPage.tsx'
+import ForgotPassword from './pages/auth/ForgotPassword.tsx'
+import ResetPassword from './pages/auth/ResetPassword.tsx'
 
 // import reactLogo from './assets/react.svg'
 // import viteLogo from './assets/vite.svg'
@@ -22,6 +24,8 @@ function App() {
     <Routes>
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
       <Route
         element={
           <SubjectProvider>
