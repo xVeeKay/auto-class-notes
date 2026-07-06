@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { SpinnerCustom } from "./ui/spinner";
 import { AlertCircleIcon, CheckCircle2Icon, ArrowRight } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useParams } from "react-router-dom";
 
 export function ResetPasswordForm({
   className,
@@ -31,6 +32,7 @@ export function ResetPasswordForm({
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const {token}=useParams()
   const [alert, setAlert] = useState<AlertState>({
     title: "",
     description: "",
@@ -52,7 +54,7 @@ export function ResetPasswordForm({
 
     try {
       setLoading(true);
-      await apiFetch("/auth/reset-password", {
+      await apiFetch(`/auth/reset-password/${token}`, {
         method: "POST",
         body: { password },
       });
