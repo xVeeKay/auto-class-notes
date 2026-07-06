@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 
-export const transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
   host: process.env.BREVO_SMTP_HOST,
   port: Number(process.env.BREVO_SMTP_PORT),
   secure: false,
@@ -8,21 +8,25 @@ export const transporter = nodemailer.createTransport({
     user: process.env.BREVO_SMTP_USER,
     pass: process.env.BREVO_SMTP_PASS,
   },
+
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 10000,
 });
 
-export const sendEmail = async ({
-  to,
-  subject,
-  html,
-}: {
-  to: string;
-  subject: string;
-  html: string;
-}) => {
-  await transporter.sendMail({
+export const sendEmail = async ({ to, subject, html }:any) => {
+  console.log("Verifying SMTP...");
+
+  await transporter.verify();
+
+  console.log("SMTP Verified");
+
+  const info = await transporter.sendMail({
     from: process.env.EMAIL_FROM,
     to,
     subject,
     html,
   });
+
+  console.log(info);
 };
