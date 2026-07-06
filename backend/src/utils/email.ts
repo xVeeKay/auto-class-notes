@@ -1,32 +1,33 @@
-import nodemailer from "nodemailer";
+type EmailOptions = {
+  to: string;
+  subject: string;
+  html: string;
+};
 
-const transporter = nodemailer.createTransport({
-  host: process.env.BREVO_SMTP_HOST,
-  port: Number(process.env.BREVO_SMTP_PORT),
-  secure: false,
-  auth: {
-    user: process.env.BREVO_SMTP_USER,
-    pass: process.env.BREVO_SMTP_PASS,
-  },
-
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  socketTimeout: 10000,
-});
-
-export const sendEmail = async ({ to, subject, html }:any) => {
-  console.log("Verifying SMTP...");
-
-  await transporter.verify();
-
-  console.log("SMTP Verified");
-
-  const info = await transporter.sendMail({
-    from: process.env.EMAIL_FROM,
-    to,
-    subject,
-    html,
+export const sendEmail = async ({ to, subject, html }: EmailOptions) => {
+  const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "api-key": process.env.BREVO_API_KEY!,
+    },
+    body: JSON.stringify({
+      sender: {
+        name: "Revly",
+        email: process.env.EMAIL_FROM!,
+      },
+      to: [
+        {
+          email: to,
+        },
+      ],
+      subject,
+      htmlContent: html,
+    }),
   });
 
-  console.log(info);
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(error);
+  }
 };
