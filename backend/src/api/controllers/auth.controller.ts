@@ -9,6 +9,7 @@ import Note from "../../models/note.model.js";
 import Subject from "../../models/subject.model.js";
 import crypto from "crypto";
 import { sendEmail } from "../../utils/email.js";
+import { googleClient } from "../../utils/google.js";
 
 const cookieOptions = {
   httpOnly: true,
@@ -239,14 +240,17 @@ export const forgotPassword = asyncHandler(
         subject: "Reset your Revly password",
         html: resetPasswordTemplate(user.name, resetUrl),
       });
-    } catch (error:any) {
-      console.log(error)
+    } catch (error: any) {
+      console.log(error);
       user.resetPasswordToken = undefined;
       user.resetPasswordExpires = undefined;
 
       await user.save({ validateBeforeSave: false });
 
-      throw new apiError(500, error.message || "Unable to send reset email. Please try again.");
+      throw new apiError(
+        500,
+        error.message || "Unable to send reset email. Please try again.",
+      );
     }
     res.status(200).json(new apiResponse(true, "Password reset email sent"));
   },
@@ -254,22 +258,84 @@ export const forgotPassword = asyncHandler(
 
 export const resetPassword = asyncHandler(
   async (req: Request, res: Response) => {
-    const {token}=req.params
-    const {password}=req.body
-    if(!password){
-      throw new apiError(400,"Password is required")
+    const { token } = req.params;
+    const { password } = req.body;
+    if (!password) {
+      throw new apiError(400, "Password is required");
     }
-    const hashedToken=crypto.createHash("sha256").update(token as string).digest("hex")
-    const user=await User.findOne({resetPasswordToken:hashedToken,resetPasswordExpires:{$gt:new Date()}})
-    if(!user){
-      throw new apiError(400,"Reset link is invalid or expired")
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(token as string)
+      .digest("hex");
+    const user = await User.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: { $gt: new Date() },
+    });
+    if (!user) {
+      throw new apiError(400, "Reset link is invalid or expired");
     }
-    user.password=password
-    user.resetPasswordToken=undefined
-    user.resetPasswordExpires=undefined
-    await user.save()
-    res.status(200).json(
-      new apiResponse(true,"Password has been reset successfully")
-    )
+    user.password = password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+    res
+      .status(200)
+      .json(new apiResponse(true, "Password has been reset successfully"));
   },
 );
+
+export const googleLogin = asyncHandler(async (req: Request, res: Response) => {
+  const { accessToken } = req.body;
+
+  if (!accessToken) {
+    throw new apiError(400, "Access token is required");
+  }
+
+  const googleResponse = await fetch(
+    "https://www.googleapis.com/oauth2/v3/userinfo",
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    },
+  );
+
+  if (!googleResponse.ok) {
+    throw new apiError(401, "Invalid Google access token");
+  }
+
+  const googleUser = await googleResponse.json();
+
+  const { email, name, picture, email_verified } = googleUser;
+
+  if (!email_verified) {
+    throw new apiError(401, "Google email not verified");
+  }
+
+  let user = await User.findOne({ email });
+
+  if (!user) {
+    user = await User.create({
+      name,
+      email,
+      googleId: googleUser.sub,
+    });
+  } else {
+    if (!user.googleId) {
+      user.googleId = googleUser.sub;
+    }
+
+    await user.save();
+  }
+
+  const token = generateToken(user._id.toString());
+
+  res
+    .cookie("token", token, cookieOptions)
+    .status(200)
+    .json(
+      new apiResponse(true, "Google login successful", {
+        user,
+      }),
+    );
+});

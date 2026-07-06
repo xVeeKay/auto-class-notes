@@ -9,6 +9,7 @@ import {
   deleteAccount,
   forgotPassword,
   resetPassword,
+  googleLogin,
 } from "../controllers/auth.controller.js";
 import { protect } from "../middlewares/auth.middleware.js";
 import validate from "../middlewares/validate.middleware.js";
@@ -27,5 +28,6 @@ router.delete("/account",protect,deleteAccount)
 router.post("/logout", protect, logoutUser);
 router.post("/forgot-password",forgotPassword)
 router.post("/reset-password/:token", resetPassword);
+router.post("/google",googleLogin)
 
 export default router

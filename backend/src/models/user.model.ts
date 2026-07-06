@@ -7,6 +7,7 @@ export interface IUser extends Document {
   password: string;
   resetPasswordToken?:string;
   resetPasswordExpires?:Date;
+  googleId?:string;
   comparePassword(enteredPassword: string): Promise<boolean>;
 }
 
@@ -32,6 +33,9 @@ const userSchema=new Schema<IUser>({
     },
     resetPasswordExpires:{
         type:Date
+    },
+    googleId:{
+        type:String,
     }
 },{timestamps:true})
 

@@ -7,6 +7,7 @@ import { ThemeProvider } from './components/theme-provider.tsx'
 import { BrowserRouter } from 'react-router-dom'
 import { TooltipProvider } from './components/ui/tooltip.tsx'
 import { Toaster } from 'sonner'
+import {GoogleOAuthProvider} from "@react-oauth/google"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -14,7 +15,11 @@ createRoot(document.getElementById("root")!).render(
       <TooltipProvider>
         <BrowserRouter>
           <AuthProvider>
-            <App />
+            <GoogleOAuthProvider
+              clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
+            >
+              <App />
+            </GoogleOAuthProvider>
             <Toaster />
           </AuthProvider>
         </BrowserRouter>
