@@ -240,6 +240,7 @@ export const forgotPassword = asyncHandler(
         html: resetPasswordTemplate(user.name, resetUrl),
       });
     } catch (error:any) {
+      console.log(error)
       user.resetPasswordToken = undefined;
       user.resetPasswordExpires = undefined;
 
