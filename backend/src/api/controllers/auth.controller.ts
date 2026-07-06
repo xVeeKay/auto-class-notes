@@ -239,13 +239,13 @@ export const forgotPassword = asyncHandler(
         subject: "Reset your Revly password",
         html: resetPasswordTemplate(user.name, resetUrl),
       });
-    } catch (error) {
+    } catch (error:any) {
       user.resetPasswordToken = undefined;
       user.resetPasswordExpires = undefined;
 
       await user.save({ validateBeforeSave: false });
 
-      throw new apiError(500, "Unable to send reset email. Please try again.");
+      throw new apiError(500, error.message || "Unable to send reset email. Please try again.");
     }
     res.status(200).json(new apiResponse(true, "Password reset email sent"));
   },
