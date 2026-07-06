@@ -27,7 +27,10 @@ export default function Layout() {
               orientation="vertical"
               className="mr-2 mt-[1.25rem] h-4"
             />{" "}
-            <span className="text-sm font-semibold">AUTO NOTES</span>{" "}
+            {/* Updated name here! */}
+            <span className="text-sm font-bold tracking-wider">
+              REVLY
+            </span>{" "}
           </header>
 
           {/* 3. STRICT MAIN CONTAINER: This passes the remaining height exactly to your Dashboard component */}

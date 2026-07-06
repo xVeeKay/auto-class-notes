@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from "react";
 import {
   Command,
   Frame,
@@ -7,15 +7,15 @@ import {
   PieChart,
   Send,
   SquarePen,
-  NotebookPen
-} from "lucide-react"
-import { useState,useEffect } from "react"
+  NotebookPen,
+} from "lucide-react";
+import { useState, useEffect } from "react";
 
-import { NavSubjects } from "./nav-subjects"
-import { NavSecondary } from "./nav-secondary"
-import { NavUser } from "./nav-user"
-import { apiFetch } from "@/api/fetchClient"
-import { uploadFetch } from "@/api/fetchClient"
+import { NavSubjects } from "./nav-subjects";
+import { NavSecondary } from "./nav-secondary";
+import { NavUser } from "./nav-user";
+import { apiFetch } from "@/api/fetchClient";
+import { uploadFetch } from "@/api/fetchClient";
 import {
   Sidebar,
   SidebarContent,
@@ -25,10 +25,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
-import { useContext } from "react"
-import { AuthContext } from "@/context/AuthContext.tsx"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/sidebar";
+import { useContext } from "react";
+import { AuthContext } from "@/context/AuthContext.tsx";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -38,16 +38,15 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Field, FieldGroup } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/dialog";
+import { Field, FieldGroup } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Link, useNavigate } from "react-router-dom"
-import { useSubjects } from "@/context/SubjectContext.tsx"
-import { SpinnerCustom } from "../ui/spinner.tsx"
-import { ThemeToggle } from "../theme-toggle.tsx"
-
+import { Link, useNavigate } from "react-router-dom";
+import { useSubjects } from "@/context/SubjectContext.tsx";
+import { SpinnerCustom } from "../ui/spinner.tsx";
+import { ThemeToggle } from "../theme-toggle.tsx";
 
 const data = {
   user: {
@@ -85,69 +84,71 @@ const data = {
       icon: Map,
     },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-    const {isMobile,setOpenMobile}=useSidebar()
-    const {subjects,fetchSubjects,loading}=useSubjects()
-    const navigate=useNavigate()
-    const {user}=useContext(AuthContext)
+  const { isMobile, setOpenMobile } = useSidebar();
+  const { subjects, fetchSubjects, loading } = useSubjects();
+  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
 
+  const handleSubjectCreation = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-    const handleSubjectCreation = async (
-      e: React.FormEvent<HTMLFormElement>,
-    ) => {
-      e.preventDefault();
+    // 1. Capture the form immediately while it still exists!
+    const form = e.currentTarget;
 
-      // 1. Capture the form immediately while it still exists!
-      const form = e.currentTarget;
+    const formData = new FormData(form);
+    const title = formData.get("title") as string;
 
-      const formData = new FormData(form);
-      const title = formData.get("title") as string;
+    const promise = apiFetch("/subjects/create", {
+      method: "POST",
+      body: { title },
+    });
 
-      const promise = apiFetch("/subjects/create", {
-        method: "POST",
-        body: { title },
-      });
+    toast.promise(promise, {
+      loading: "Creating subject...",
+      success: () => {
+        form.reset();
+        return `${title} created successfully`;
+      },
+      error: (err) => err?.message || "Failed to create subject",
+    });
 
-      toast.promise(promise, {
-        loading: "Creating subject...",
-        success: () => {
-          form.reset();
-          return `${title} created successfully`;
-        },
-        error: (err) => err?.message || "Failed to create subject",
-      });
-
-      const res = await promise;
-      await fetchSubjects()
-      if(isMobile){
-        setOpenMobile(false)
-      }
-      navigate(`/dashboard/${res.data._id}`);
-    };
+    const res = await promise;
+    await fetchSubjects();
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+    navigate(`/dashboard/${res.data._id}`);
+  };
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <div className="flex items-center justify-between px-2">
-              <SidebarMenuButton size="lg" asChild className="flex-1">
-                <Link to="/dashboard">
-                  <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                    <Command className="size-4" />
-                  </div>
-
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">Auto Notes</span>
-                    <span className="truncate text-xs text-muted-foreground">
-                      AI Revision Assistant
-                    </span>
-                  </div>
+            {/* Removed the extra left padding to align flush with the items below */}
+            <div className="flex w-full items-center justify-between pr-3 py-1">
+              <SidebarMenuButton
+                size="lg"
+                asChild
+                className="flex-1 hover:bg-transparent"
+              >
+                <Link to="/dashboard" className="flex items-center gap-3">
+                  <img
+                    src="/logo.png"
+                    alt="Revly"
+                    className="w-6 h-6 object-contain dark:invert shrink-0"
+                  />
+                  <span className="truncate font-bold text-lg text-foreground">
+                    Revly
+                  </span>
                 </Link>
               </SidebarMenuButton>
 
-              <ThemeToggle />
+              <div className="shrink-0">
+                <ThemeToggle />
+              </div>
             </div>
           </SidebarMenuItem>
         </SidebarMenu>

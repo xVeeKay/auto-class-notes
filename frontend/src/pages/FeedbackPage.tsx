@@ -10,12 +10,12 @@ import {
   Lock,
   CheckCircle2,
   Heart,
-  ArrowLeft, // Added ArrowLeft
+  ArrowLeft,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { apiFetch } from "@/api/fetchClient.ts";
-import { Link } from "react-router-dom"; // Added Link
+import { Link } from "react-router-dom";
 
 // --- Types & Data ---
 type CategoryId = "ai" | "bug" | "feature" | "ui" | "performance" | "general";
@@ -58,7 +58,7 @@ export default function FeedbackPage() {
           message: details,
         },
       });
-      toast.success("Feedback sent! Thank you for helping improve AutoNotes.");
+      toast.success("Feedback sent! Thank you for helping improve Revly.");
       setSubject("");
       setDetails("");
     } catch (error: any) {
@@ -94,7 +94,7 @@ export default function FeedbackPage() {
                 <Heart size={28} className="text-primary fill-primary/20" />
               </h1>
               <p className="text-muted-foreground text-sm md:text-base leading-relaxed max-w-2xl">
-                AutoNotes is a project I'm building while learning full-stack
+                Revly is a project I'm building while learning full-stack
                 development. You may find bugs, inaccurate AI notes, or areas
                 that can be improved. Your feedback helps me make it better.{" "}
                 <span className="font-semibold text-foreground">
@@ -172,7 +172,7 @@ export default function FeedbackPage() {
                   rows={5}
                   value={details}
                   onChange={(e) => setDetails(e.target.value)}
-                  placeholder="Describe your experience...&#10;What happened?&#10;What did you expect?&#10;How can AutoNotes be improved?"
+                  placeholder="Describe your experience...&#10;What happened?&#10;What did you expect?&#10;How can Revly be improved?"
                   className="w-full px-4 py-3 rounded-xl border border-border/60 bg-muted/20 outline-none transition-all focus:bg-background focus:border-primary focus:ring-4 focus:ring-primary/10 text-sm placeholder:text-muted-foreground/60 resize-none leading-relaxed"
                 />
               </div>
@@ -190,7 +190,7 @@ export default function FeedbackPage() {
 
                 <p className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
                   <Lock size={12} />
-                  Your feedback is private and only used to improve AutoNotes.
+                  Your feedback is private and only used to improve Revly.
                 </p>
               </div>
             </form>

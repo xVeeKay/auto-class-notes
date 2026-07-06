@@ -31,17 +31,17 @@ export default function SupportPage() {
         {/* ================= HERO SECTION ================= */}
         <div className="mb-12">
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight flex items-center gap-3 mb-4">
-            Support AutoNotes
+            Support Revly
             <Heart size={32} className="text-red-500 fill-red-500/20" />
           </h1>
           <p className="text-xl text-foreground/90 font-medium mb-4">
             Every contribution helps improve the app for everyone.
           </p>
           <p className="text-muted-foreground text-[15px] md:text-base leading-relaxed max-w-2xl">
-            AutoNotes is built and maintained by a student who enjoys building
-            useful tools for other students. If AutoNotes has helped you save
-            time, revise faster, or organize your notes better, you can support
-            its development.
+            Revly is built and maintained by a student who enjoys building
+            useful tools for other students. If Revly has helped you save time,
+            revise faster, or organize your notes better, you can support its
+            development.
           </p>
         </div>
 
@@ -55,7 +55,7 @@ export default function SupportPage() {
             <div className="bg-primary/5 border border-primary/10 rounded-2xl p-6 md:p-8 text-[15px] md:text-base leading-relaxed text-foreground/90 space-y-4 shadow-sm">
               <p>Hi! 👋</p>
               <p>
-                I'm a Computer Science student who built AutoNotes to solve a
+                I'm a Computer Science student who built Revly to solve a
                 problem I personally faced while studying.
               </p>
               <p>
@@ -65,7 +65,7 @@ export default function SupportPage() {
                 direction of this project.
               </p>
               <p>
-                If AutoNotes has been useful to you, even a small contribution
+                If Revly has been useful to you, even a small contribution
                 motivates me to keep improving it.
               </p>
               <p className="pt-2 font-medium">
@@ -139,7 +139,7 @@ export default function SupportPage() {
               </div>
               <h3 className="text-lg font-semibold mb-2">Better AI</h3>
               <p className="text-sm text-muted-foreground mb-4 font-medium">
-                AI is the biggest cost of AutoNotes.
+                AI is the biggest cost of Revly.
               </p>
               <ul className="space-y-2 mt-auto">
                 {[
@@ -268,7 +268,7 @@ export default function SupportPage() {
               <Share2 size={20} className="text-primary mb-3" />
               <h3 className="font-semibold text-[15px] mb-1">Keep Using It</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Simply using and recommending AutoNotes is a huge help!
+                Simply using and recommending Revly is a huge help!
               </p>
             </div>
           </div>
@@ -277,7 +277,7 @@ export default function SupportPage() {
         {/* ================= FOOTER DISCLAIMER ================= */}
         <div className="mt-12 pt-8 border-t border-border/40 text-center">
           <p className="text-sm text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Donations are completely optional. AutoNotes will continue to remain
+            Donations are completely optional. Revly will continue to remain
             available to everyone regardless of whether you choose to support it
             financially.
           </p>

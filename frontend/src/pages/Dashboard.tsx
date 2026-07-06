@@ -2,11 +2,17 @@ import React, { useState, useRef, useEffect } from "react";
 import {
   Camera,
   Image as ImageIcon,
+  FileText,
   Send,
   CheckCircle2,
   Clock,
   XCircle,
   ArrowRight,
+  Sparkles,
+  BrainCircuit,
+  Library,
+  Zap,
+  ArrowDown,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
@@ -135,12 +141,12 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex flex-col h-full w-full bg-background text-foreground font-sans">
+    <div className="flex flex-col h-full w-full bg-background text-foreground font-sans relative overflow-hidden">
       {/* HIDDEN FILE INPUTS */}
       <input
         type="file"
         accept="image/*"
-        capture="environment" // Prioritizes rear camera on mobile
+        capture="environment"
         ref={cameraInputRef}
         className="hidden"
         onChange={handleFileSelect}
@@ -148,25 +154,29 @@ export default function Dashboard() {
       <input
         type="file"
         accept="image/*"
-        multiple // Allow multiple image selection
+        multiple
         ref={galleryInputRef}
         className="hidden"
         onChange={handleFileSelect}
       />
 
       {/* SCROLLABLE CONTENT AREA */}
-      <div className="flex-1 overflow-y-auto p-4 md:p-8">
+      <div className="flex-1 overflow-y-auto p-4 md:p-8 relative z-10">
         {queue.length === 0 ? (
           /* EMPTY STATE */
-          <div className="flex flex-col items-center justify-center h-full max-w-2xl mx-auto text-center fade-in animate-in duration-500">
-            <div className="h-16 w-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-6 shadow-sm">
-              <Camera size={32} />
-            </div>
-            <h1 className="text-3xl font-bold tracking-tight mb-2">
-              AutoNotes
+          <div className="flex h-full flex-col items-center justify-center text-center px-6 animate-in fade-in duration-500">
+            <img
+              src="/logo.png"
+              alt="Revly"
+              className="mb-6 h-14 w-14 object-contain dark:invert shrink-0"
+            />
+
+            <h1 className="text-4xl font-semibold tracking-tight">
+              Welcome to Revly
             </h1>
-            <p className="text-muted-foreground text-lg mb-8">
-              Transform lecture photos into revision-ready notes.
+
+            <p className="mt-3 max-w-sm text-muted-foreground leading-relaxed">
+              Turn lecture images into concise revision notes.
             </p>
           </div>
         ) : (
@@ -178,7 +188,7 @@ export default function Dashboard() {
             {queue.map((item) => (
               <div
                 key={item.id}
-                className="flex items-center p-4 bg-card border border-border rounded-xl shadow-sm"
+                className="flex items-center p-4 bg-card/80 backdrop-blur-sm border border-border rounded-xl shadow-sm"
               >
                 <div className="h-10 w-10 bg-muted rounded-md flex items-center justify-center mr-4 text-muted-foreground">
                   <ImageIcon size={20} />
@@ -244,46 +254,49 @@ export default function Dashboard() {
       </div>
 
       {/* STATIC BOTTOM UPLOAD BAR */}
-      <div className="shrink-0 bg-background px-4 pb-6 pt-2 md:px-8 md:pb-8">
+      <div className="shrink-0 bg-transparent px-4 pb-6 pt-2 md:px-8 md:pb-8 relative z-10">
         <div className="max-w-3xl mx-auto w-full">
-          <div className="flex items-center gap-2 p-2 bg-card border border-border shadow-sm rounded-full transition-all focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background">
-            {/* Camera Action */}
-            <button
-              onClick={() => cameraInputRef.current?.click()}
-              className="h-10 w-10 flex items-center justify-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground transition-colors ml-1"
-              aria-label="Take Photo"
-            >
-              <Camera size={20} />
-            </button>
+          <div className="relative w-full">
+            {/* THE EXPANDED GLOW: -inset-4 pushes it outside the bar's borders, higher opacity and blur */}
+            <div className="absolute -inset-4 md:-inset-6 bg-blue-500/50 dark:bg-blue-500/40 blur-[50px] md:blur-[60px] pointer-events-none -z-10 rounded-full" />
 
-            {/* Gallery Action */}
-            <button
-              onClick={() => galleryInputRef.current?.click()}
-              className="h-10 w-10 flex items-center justify-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
-              aria-label="Upload Gallery"
-            >
-              <ImageIcon size={20} />
-            </button>
+            {/* THE INPUT BAR */}
+            <div className="relative z-10 flex items-center gap-2 p-2 bg-card/60 backdrop-blur-md border border-border shadow-sm rounded-full transition-all focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background">
+              <button
+                onClick={() => cameraInputRef.current?.click()}
+                className="h-10 w-10 flex items-center justify-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground transition-colors ml-1"
+                aria-label="Take Photo"
+              >
+                <Camera size={20} />
+              </button>
 
-            {/* Clickable Text Area (Defaults to gallery upload for speed) */}
-            <div
-              onClick={() => galleryInputRef.current?.click()}
-              className="flex-1 px-2 text-sm text-muted-foreground truncate cursor-pointer hover:text-foreground transition-colors"
-            >
-              Capture or select images...
+              <button
+                onClick={() => galleryInputRef.current?.click()}
+                className="h-10 w-10 flex items-center justify-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+                aria-label="Upload Gallery"
+              >
+                <ImageIcon size={20} />
+              </button>
+
+              <div
+                onClick={() => galleryInputRef.current?.click()}
+                className="flex-1 px-2 text-sm text-muted-foreground truncate cursor-pointer hover:text-foreground transition-colors"
+              >
+                Capture or select images...
+              </div>
+
+              <button
+                onClick={() => galleryInputRef.current?.click()}
+                className="h-10 px-4 rounded-full bg-primary text-primary-foreground font-medium flex items-center gap-2 hover:opacity-90 transition-opacity shadow-sm mr-1"
+              >
+                <span className="hidden sm:inline">Upload</span>
+                <Send size={16} />
+              </button>
             </div>
-
-            {/* Upload Button */}
-            <button
-              onClick={() => galleryInputRef.current?.click()}
-              className="h-10 px-4 rounded-full bg-primary text-primary-foreground font-medium flex items-center gap-2 hover:opacity-90 transition-opacity shadow-sm mr-1"
-            >
-              <span className="hidden sm:inline">Upload</span>
-              <Send size={16} />
-            </button>
           </div>
-          <p className="text-center text-xs text-muted-foreground mt-3 pb-1 hidden sm:block">
-            AutoNotes AI automatically categorizes and summarizes your uploads.
+
+          <p className="text-center text-xs text-muted-foreground mt-4 pb-1 hidden sm:block">
+            Revly AI automatically categorizes and summarizes your uploads.
           </p>
         </div>
       </div>
