@@ -10,17 +10,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { SpinnerCustom } from "./ui/spinner.tsx";
-import { AlertCircleIcon, CheckCircle2Icon } from "lucide-react";
+import { SpinnerCustom } from "./ui/spinner";
+import { AlertCircleIcon, CheckCircle2Icon, ArrowRight } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { useParams } from "react-router-dom";
 
 export function ResetPasswordForm({
   className,
@@ -36,7 +30,7 @@ export function ResetPasswordForm({
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const {token}=useParams()
+  const [isSuccess, setIsSuccess] = useState(false);
   const [alert, setAlert] = useState<AlertState>({
     title: "",
     description: "",
@@ -58,13 +52,15 @@ export function ResetPasswordForm({
 
     try {
       setLoading(true);
-      await apiFetch(`/auth/reset-password/${token}`, {
+      await apiFetch("/auth/reset-password", {
         method: "POST",
         body: { password },
       });
+      setIsSuccess(true);
       setAlert({
-        title: "Success",
-        description: "Your password has been reset successfully.",
+        title: "Password Reset",
+        description:
+          "Your password has been reset successfully. You can now log in.",
         type: "default",
         showAlert: true,
       });
@@ -97,42 +93,54 @@ export function ResetPasswordForm({
 
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Set new password</CardTitle>
-          <CardDescription>
-            Please enter your new password below.
-          </CardDescription>
+          <CardTitle className="text-xl">
+            {isSuccess ? "Success!" : "Set new password"}
+          </CardTitle>
+          {!isSuccess && (
+            <CardDescription>
+              Please enter your new password below.
+            </CardDescription>
+          )}
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleReset}>
-            <FieldGroup>
-              <Field>
-                <FieldLabel htmlFor="password">New Password</FieldLabel>
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="confirmPassword">
-                  Confirm Password
-                </FieldLabel>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  required
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                />
-              </Field>
-              <Field>
-                <Button type="submit" disabled={loading}>
-                  {loading && <SpinnerCustom />}
-                  {loading ? "Updating..." : "Update Password"}
-                </Button>
-              </Field>
-            </FieldGroup>
-          </form>
+          {isSuccess ? (
+            <Button asChild className="w-full gap-2">
+              <Link to="/login">
+                Return to Login <ArrowRight size={16} />
+              </Link>
+            </Button>
+          ) : (
+            <form onSubmit={handleReset}>
+              <FieldGroup>
+                <Field>
+                  <FieldLabel htmlFor="password">New Password</FieldLabel>
+                  <Input
+                    id="password"
+                    type="password"
+                    required
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor="confirmPassword">
+                    Confirm Password
+                  </FieldLabel>
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    required
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                </Field>
+                <Field>
+                  <Button type="submit" disabled={loading}>
+                    {loading && <SpinnerCustom />}
+                    {loading ? "Updating..." : "Update Password"}
+                  </Button>
+                </Field>
+              </FieldGroup>
+            </form>
+          )}
         </CardContent>
       </Card>
     </div>
