@@ -7,6 +7,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 
+
 @theme inline {
 
     --font-heading: var(--font-sans);
@@ -173,3 +174,5 @@
     @apply font-sans;
     }
 }
+
+

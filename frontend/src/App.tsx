@@ -12,6 +12,7 @@ import FeedbackPage from './pages/FeedbackPage.tsx'
 import SupportPage from './pages/SupportPage.tsx'
 import ForgotPassword from './pages/auth/ForgotPassword.tsx'
 import ResetPassword from './pages/auth/ResetPassword.tsx'
+import LandingPage from './pages/LandingPage.tsx'
 
 // import reactLogo from './assets/react.svg'
 // import viteLogo from './assets/vite.svg'
@@ -26,6 +27,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
+      <Route path="/" element={<LandingPage />} />
       <Route
         element={
           <SubjectProvider>

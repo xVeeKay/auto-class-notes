@@ -61,6 +61,9 @@ userSchema.set('toJSON', {
 })
 
 userSchema.methods.comparePassword=async function(enteredPassword:string){
+    if(!this.password){
+        
+    }
     return bcrypt.compare(enteredPassword,this.password)
 }
 
