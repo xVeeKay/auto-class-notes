@@ -211,7 +211,7 @@ Exam Time 🎉
 ## Clone Repository
 
 ```bash
-git clone https://github.com/xVeeKay/revly.git
+git clone https://github.com/xVeeKay/auto-class-notes.git
 ```
 
 ---
