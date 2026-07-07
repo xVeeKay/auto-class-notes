@@ -594,7 +594,7 @@ export default function LandingPage() {
             {/* Right Side: GitHub Link */}
             <div className="flex items-center">
               <a
-                href="https://github.com/xveekay"
+                href="https://github.com/xVeeKay/auto-class-notes"
                 target="_blank"
                 rel="noreferrer"
                 className="w-10 h-10 rounded-full bg-slate-900 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition-all shadow-sm border border-slate-800"
