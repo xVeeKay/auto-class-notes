@@ -5,77 +5,137 @@
 </p>
 
 <p align="center">
-  <strong>AI-powered platform that transforms lecture images into structured revision notes.</strong>
+  <strong>Never lose your lecture notes again.</strong>
+</p>
+
+<p align="center">
+Revly automatically transforms your classroom photos into organized, revision-ready notes while you focus on learning.
 </p>
 
 <p align="center">
   <a href="https://revly-notes.vercel.app"><strong>🌐 Live Demo</strong></a>
-  •
-  <a href="#features"><strong>✨ Features</strong></a>
-  •
-  <a href="#installation"><strong>⚡ Installation</strong></a>
 </p>
 
 ---
 
-## 📖 About
+# 📖 Why Revly?
 
-Revly is an AI-powered study platform that helps students convert lecture images into organized, revision-ready notes.
+Every student has hundreds of lecture photos sitting in their phone gallery.
 
-Instead of manually typing classroom notes, students simply upload lecture images and Revly automatically extracts the content, organizes it into subjects, generates clean markdown notes using AI, and stores everything securely for future revision.
+During class, taking a picture is quick and convenient. But when exams arrive, those photos become difficult to search, impossible to revise from, and often end up forgotten.
 
-The project focuses on making studying faster, more organized, and more efficient.
+As a result, students spend hours looking for notes or borrowing them from friends—even though they already captured everything in class.
+
+Revly solves this problem **without changing the student's existing habit.**
+
+Keep taking lecture photos exactly as you always do.
+
+Simply upload them to Revly, and the platform automatically processes them in the background using AI to create clean, structured, subject-wise revision notes—without writing prompts, copying text, or manually organizing anything.
+
+Instead of ending the semester with a gallery full of forgotten images, you'll have a complete collection of organized notes ready whenever exams begin.
 
 ---
 
 # ✨ Features
 
-### 🤖 AI Powered
+## 📸 Upload Like You Always Do
 
-* AI-generated structured notes
-* Automatic note formatting
-* AI summaries
-* Markdown output
+- Upload classroom lecture images
+- No prompts to write
+- No manual typing
+- No copying text
+- Same effort as taking lecture photos
 
-### 📸 Smart Upload
+---
 
-* Upload lecture images
-* Cloudinary image storage
-* OCR text extraction
-* Fast processing
+## 🤖 AI Works Automatically
 
-### 📚 Organization
+- Background AI processing
+- Intelligent note generation
+- Clean markdown formatting
+- AI-generated summaries
+- Structured revision notes
 
-* Subject management
-* Organized notes
-* Search functionality
-* Recent activity
+---
 
-### 🔐 Authentication
+## 📚 Stay Organized
 
-* Email & Password Login
-* Google Sign In
-* Forgot Password
-* Password Reset via Email
-* JWT Authentication
-* Secure HTTP-only Cookies
+- Automatic subject organization
+- Search notes instantly
+- Beautiful dashboard
+- Track uploaded notes
+- Access everything from one place
 
-### ☁️ Cloud Services
+---
 
-* MongoDB Atlas
-* Cloudinary
-* Brevo Email
-* Render Deployment
-* Vercel Frontend
+## ⚡ Built for Exam Season
 
-### 🎨 User Experience
+Instead of scrolling through hundreds of gallery photos,
 
-* Modern UI
-* Dark Mode
-* Responsive Design
-* Beautiful animations
-* Loading states
-* Toast notifications
+Revly gives you:
+
+- Complete revision notes
+- Organized subjects
+- Searchable content
+- Ready-to-study material
+
+when you actually need it.
+
+---
+
+## 🔐 Secure Authentication
+
+- Email & Password Login
+- Google Sign In
+- Forgot Password
+- Secure Password Reset
+- JWT Authentication
+- HTTP-only Cookies
+
+---
+
+## ☁️ Cloud Infrastructure
+
+- Cloudinary Image Storage
+- MongoDB Atlas
+- Redis Queue
+- BullMQ Background Processing
+- Brevo Email Service
+- Google Gemini AI
+
+---
+
+# 🎯 The Revly Workflow
+
+Lecture
+
+↓
+
+📸 Take Photo
+
+↓
+
+Upload to Revly
+
+↓
+
+Background AI Processing
+
+↓
+
+Automatic Note Generation
+
+↓
+
+Subject Organization
+
+↓
+
+Revision-ready Notes
+
+↓
+
+Exam Time 🎉
 
 ---
 
@@ -116,62 +176,6 @@ The project focuses on making studying faster, more organized, and more efficien
 * OCR Processing
 * Markdown Generation
 
----
-
-# 📸 Screenshots
-
-## Landing Page
-
-> Add screenshot here
-
-```
-screenshots/
-    landing.png
-```
-
----
-
-## Dashboard
-
-> Add screenshot here
-
-```
-screenshots/
-    dashboard.png
-```
-
----
-
-## AI Generated Notes
-
-> Add screenshot here
-
-```
-screenshots/
-    notes.png
-```
-
----
-
-## Upload Page
-
-> Add screenshot here
-
-```
-screenshots/
-    upload.png
-```
-
----
-
-## Profile
-
-> Add screenshot here
-
-```
-screenshots/
-    profile.png
-```
 
 ---
 
