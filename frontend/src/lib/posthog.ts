@@ -5,7 +5,6 @@ posthog.init(import.meta.env.VITE_POSTHOG_KEY, {
   debug: true,
   loaded: (posthog) => {
     console.log("✅ PostHog loaded");
-    console.log(posthog.get_distinct_id());
   },
 });
 
