@@ -9,6 +9,7 @@ import { TooltipProvider } from './components/ui/tooltip.tsx'
 import { Toaster } from 'sonner'
 import {GoogleOAuthProvider} from "@react-oauth/google"
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -22,6 +23,7 @@ createRoot(document.getElementById("root")!).render(
               <App />
             </GoogleOAuthProvider>
             <Analytics />
+            <SpeedInsights />
             <Toaster />
           </AuthProvider>
         </BrowserRouter>
