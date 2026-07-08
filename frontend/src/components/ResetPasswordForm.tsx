@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import posthog from "@/lib/posthog";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { SpinnerCustom } from "./ui/spinner";
@@ -59,6 +60,7 @@ export function ResetPasswordForm({
         body: { password },
       });
       setIsSuccess(true);
+      posthog.capture("password_reset");
       setAlert({
         title: "Password Reset",
         description:

@@ -26,6 +26,8 @@ import {
 } from "@/components/ui/alert"
 import { CheckCircle2Icon} from "lucide-react"
 import { SpinnerCustom } from "./ui/spinner"
+import posthog from "@/lib/posthog";
+
 
 export function SignupForm({
   className,
@@ -76,6 +78,7 @@ export function SignupForm({
           password
         }
       })
+      posthog.capture("user_registered");
       navigate("/login")
     } catch (error:any) {
         setError({

@@ -4,6 +4,7 @@ import { useState, useContext,useEffect } from "react";
 import { apiFetch } from "@/api/fetchClient";
 import { AuthContext } from "@/context/AuthContext";
 import { Link } from "react-router-dom";
+import posthog from "@/lib/posthog.ts";
 import {
   Card,
   CardContent,
@@ -67,6 +68,11 @@ export function LoginForm({
         });
         const me=await apiFetch("/auth/me")
         setUser(me.data.user)
+        posthog.identify(me.data.user._id, {
+          email: me.data.user.email,
+          name: me.data.user.name,
+        });
+        posthog.capture("google_login");
         toast.success("Logged in successfully")
         navigate("/dashboard")
       } catch (err) {
@@ -91,7 +97,11 @@ export function LoginForm({
       });
 
       setUser(res.data.user);
-
+      posthog.identify(res.data.user._id, {
+        email: res.data.user.email,
+        name: res.data.user.name,
+      });
+      posthog.capture("user_logged_in");
       navigate("/dashboard")
     } catch (error: any) {
       setError({

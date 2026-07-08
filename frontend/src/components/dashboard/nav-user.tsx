@@ -32,6 +32,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import posthog from "@/lib/posthog";
 import { useNavigate } from "react-router-dom"
 import { useContext, useState } from "react"
 import { apiFetch } from "@/api/fetchClient.ts"
@@ -62,6 +63,8 @@ export function NavUser({
         method:"POST"
       })
       setUser(null)
+      posthog.capture("user_logged_out");
+      posthog.reset();
       toast.success("User logged out successfully");
       navigate("/login")
     } catch (error:any) {

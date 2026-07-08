@@ -14,6 +14,7 @@ import {
   Zap,
   ArrowDown,
 } from "lucide-react";
+import posthog from "@/lib/posthog";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
@@ -62,6 +63,7 @@ export default function Dashboard() {
     const formData = new FormData();
     formData.append("file", file);
     const res = await uploadFetch("/notes/upload", formData);
+    posthog.capture("image_uploaded");
     return res;
   };
 
@@ -93,6 +95,7 @@ export default function Dashboard() {
               1,
             )}s`,
           );
+          posthog.capture("note_generated");
           await fetchSubjects();
           clearInterval(interval);
         }
