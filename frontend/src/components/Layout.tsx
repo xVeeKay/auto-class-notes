@@ -7,8 +7,13 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { ThemeToggle } from "./theme-toggle.tsx";
+import { useContext } from "react";
+import { AuthContext } from "@/context/AuthContext.tsx";
+import { Button } from "./ui/button.tsx";
+import { Link } from "react-router-dom";
 
 export default function Layout() {
+  const {user}=useContext(AuthContext)
   return (
     // 1. FIXED INSET: This physically locks the entire application to the four corners of your browser window. It cannot scroll.
     <div className="fixed inset-0 w-full overflow-hidden bg-background flex">
@@ -28,9 +33,25 @@ export default function Layout() {
               className="mr-2 mt-[1.25rem] h-4"
             />{" "}
             {/* Updated name here! */}
-            <span className="text-sm font-bold tracking-wider">
-              REVLY
-            </span>{" "}
+            <span className="text-sm font-bold tracking-wider">REVLY</span>{" "}
+            {!user && (
+            <div className="flex items-center gap-2.5 ml-auto">
+              <Button
+                asChild
+                className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 text-sm font-bold px-5 h-9"
+              >
+                <Link to="/login">Log in</Link>
+              </Button>
+
+              <Button
+                asChild
+                variant="outline"
+                className="rounded-full bg-muted/20 border-border/60 hover:bg-muted text-sm font-bold px-5 h-9 transition-colors"
+              >
+                <Link to="/register">Sign up for free</Link>
+              </Button>
+            </div>
+            )}
           </header>
 
           {/* 3. STRICT MAIN CONTAINER: This passes the remaining height exactly to your Dashboard component */}

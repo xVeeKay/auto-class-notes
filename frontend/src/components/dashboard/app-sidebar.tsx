@@ -94,7 +94,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const handleSubjectCreation = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    if(!user){
+      toast.error("You need to login first")
+      return
+    }
     // 1. Capture the form immediately while it still exists!
     const form = e.currentTarget;
 
@@ -201,7 +204,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </form>
           </DialogContent>
         </Dialog>
-        {loading ? (
+        {/* If no user, show nothing (blank space). Otherwise, show loading or subjects. */}
+        {!user ? null : loading ? (
           <div className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground">
             <SpinnerCustom />
             Loading subjects...
@@ -212,7 +216,29 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} />
+        {user ? (
+          <NavUser user={user} />
+        ) : (
+          <div className="flex flex-col gap-3 p-3 rounded-xl bg-muted/40 border border-border/50 text-xs">
+            <div>
+              <p className="font-semibold text-foreground mb-1">
+                Get notes tailored to you
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                Log in to save your revision notes, organize subjects, and
+                access your history anywhere.
+              </p>
+            </div>
+            <Button
+              variant="default"
+              size="sm"
+              className="w-full font-medium"
+              asChild
+            >
+              <Link to="/login">Log in</Link>
+            </Button>
+          </div>
+        )}
       </SidebarFooter>
     </Sidebar>
   );

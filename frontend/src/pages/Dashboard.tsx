@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import {
   Camera,
   Image as ImageIcon,
@@ -13,6 +13,7 @@ import {
   Library,
   Zap,
   ArrowDown,
+  Lock,
 } from "lucide-react";
 import posthog from "@/lib/posthog";
 import { Link } from "react-router-dom";
@@ -21,6 +22,8 @@ import { toast } from "sonner";
 import { apiFetch, uploadFetch } from "@/api/fetchClient.ts";
 import { SpinnerCustom } from "@/components/ui/spinner.tsx";
 import { useSubjects } from "@/context/SubjectContext.tsx";
+import { AuthContext } from "@/context/AuthContext.tsx";
+import { Button } from "@/components/ui/button";
 
 type QueueStatus = "queued" | "processing" | "completed" | "failed";
 
@@ -40,9 +43,11 @@ export default function Dashboard() {
   const [queue, setQueue] = useState<QueueItem[]>(initialQueue);
   const [isProcessing, setIsProcessing] = useState(false);
   const { fetchSubjects } = useSubjects();
+  const { user, loading } = useContext(AuthContext);
 
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
+  const hasWelcomedGuest = useRef(false);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -66,6 +71,17 @@ export default function Dashboard() {
     posthog.capture("image_uploaded");
     return res;
   };
+
+  useEffect(() => {
+    if (!loading && !user && !hasWelcomedGuest.current) {
+      toast("Welcome to Revly! 👋", {
+        description: "Sign in to start generating and saving your AI notes.",
+        duration: 5000,
+        position: "top-center", // ✨ Add this line!
+      });
+      hasWelcomedGuest.current = true;
+    }
+  }, [user, loading]);
 
   useEffect(() => {
     if (isProcessing) return;
@@ -263,39 +279,67 @@ export default function Dashboard() {
             {/* THE EXPANDED GLOW: -inset-4 pushes it outside the bar's borders, higher opacity and blur */}
             <div className="absolute -inset-4 md:-inset-6 bg-blue-500/50 dark:bg-blue-500/40 blur-[50px] md:blur-[60px] pointer-events-none -z-10 rounded-full" />
 
-            {/* THE INPUT BAR */}
-            <div className="relative z-10 flex items-center gap-2 p-2 bg-card/60 backdrop-blur-md border border-border shadow-sm rounded-full transition-all focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background">
-              <button
-                onClick={() => cameraInputRef.current?.click()}
-                className="h-10 w-10 flex items-center justify-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground transition-colors ml-1"
-                aria-label="Take Photo"
-              >
+            {/* CONDITIONAL UPLOAD BAR */}
+            {user ? (
+              /* ACTIVE STATE */
+              <div className="relative z-10 flex items-center gap-2 p-2 bg-card/60 backdrop-blur-md border border-border shadow-sm rounded-full transition-all focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background">
+                <button
+                  onClick={() => cameraInputRef.current?.click()}
+                  className="h-10 w-10 flex items-center justify-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground transition-colors ml-1"
+                  aria-label="Take Photo"
+                >
+                  <Camera size={20} />
+                </button>
+
+                <button
+                  onClick={() => galleryInputRef.current?.click()}
+                  className="h-10 w-10 flex items-center justify-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+                  aria-label="Upload Gallery"
+                >
+                  <ImageIcon size={20} />
+                </button>
+
+                <div
+                  onClick={() => galleryInputRef.current?.click()}
+                  className="flex-1 px-2 text-sm text-muted-foreground truncate cursor-pointer hover:text-foreground transition-colors"
+                >
+                  Capture or select images...
+                </div>
+
+                <button
+                  onClick={() => galleryInputRef.current?.click()}
+                  className="h-10 px-4 rounded-full bg-primary text-primary-foreground font-medium flex items-center gap-2 hover:opacity-90 transition-opacity shadow-sm mr-1"
+                >
+                  <span className="hidden sm:inline">Upload</span>
+                  <Send size={16} />
+                </button>
+              </div>
+            ) : (
+            <div className="relative z-10 flex items-center gap-2 p-2 bg-muted/40 backdrop-blur-md border border-border/50 shadow-sm rounded-full select-none cursor-not-allowed">
+
+              {/* Dimmed media icons showing it's an upload bar */}
+              <div className="h-10 w-10 flex items-center justify-center rounded-full text-muted-foreground/50 ml-1">
                 <Camera size={20} />
-              </button>
-
-              <button
-                onClick={() => galleryInputRef.current?.click()}
-                className="h-10 w-10 flex items-center justify-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
-                aria-label="Upload Gallery"
-              >
+              </div>
+              <div className="h-10 w-10 flex items-center justify-center rounded-full text-muted-foreground/50 hidden sm:flex">
                 <ImageIcon size={20} />
-              </button>
-
-              <div
-                onClick={() => galleryInputRef.current?.click()}
-                className="flex-1 px-2 text-sm text-muted-foreground truncate cursor-pointer hover:text-foreground transition-colors"
-              >
-                Capture or select images...
               </div>
 
-              <button
-                onClick={() => galleryInputRef.current?.click()}
-                className="h-10 px-4 rounded-full bg-primary text-primary-foreground font-medium flex items-center gap-2 hover:opacity-90 transition-opacity shadow-sm mr-1"
+              {/* Simple, minimal locked placeholder text */}
+              <div className="flex-1 px-2 flex items-center gap-2 text-sm text-muted-foreground truncate">
+                <Lock size={14} className="shrink-0 opacity-70" />
+                <span className="truncate">Sign in to upload images...</span>
+              </div>
+
+              {/* Login Button replacing the Upload button */}
+              <Button
+                asChild
+                className="h-10 px-5 sm:px-6 rounded-full font-medium shrink-0 shadow-sm mr-1 pointer-events-auto"
               >
-                <span className="hidden sm:inline">Upload</span>
-                <Send size={16} />
-              </button>
+                <Link to="/login">Log in</Link>
+              </Button>
             </div>
+            )}
           </div>
 
           <p className="text-center text-xs text-muted-foreground mt-4 pb-1 hidden sm:block">

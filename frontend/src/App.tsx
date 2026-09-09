@@ -27,7 +27,6 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
-      <Route path="/" element={<LandingPage />} />
       <Route
         element={
           <SubjectProvider>
@@ -38,9 +37,7 @@ function App() {
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoutes>
-              <Dashboard />
-            </ProtectedRoutes>
+            <Dashboard/>
           }
         />
         <Route
@@ -63,21 +60,30 @@ function App() {
       <Route
         path="/feedback"
         element={
-          <ProtectedRoutes>
             <FeedbackPage />
-          </ProtectedRoutes>
         }
       />
       <Route
         path="/support"
         element={
-          <ProtectedRoutes>
             <SupportPage />
-          </ProtectedRoutes>
         }
       />
 
-      <Route path="*" element={<Login />} />
+       <Route
+        element={
+          <SubjectProvider>
+            <Layout />
+          </SubjectProvider>
+        }
+      >
+        <Route
+          path="*"
+          element={
+            <Dashboard/>
+          }
+        />
+       </Route>
     </Routes>
   );
 }
